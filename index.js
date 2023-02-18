@@ -11,22 +11,20 @@ app.use(express.json())
 app.use(cookieParser())
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "../front-end/blog-front-end/public/upload");
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + file.originalname);
-    },
-  });
-  
-const upload = multer({ storage });
-  
-app.post("/api/upload", upload.single("file"), function (req, res) {
-    const file = req.files;
-    console.log("image uploaded")
-    res.status(200).json(file?.filename);
+  destination: function (req, file, cb) {
+    cb(null, "../front-end/blog-front-end/public/upload");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
 });
 
+const upload = multer({ storage });
+
+app.post("/api/upload", upload.single("file"), function (req, res) {
+  const file = req.file;
+  res.status(200).json(file.filename);
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
